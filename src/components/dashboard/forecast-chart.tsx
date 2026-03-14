@@ -1,6 +1,9 @@
 "use client"
 
+import { useSyncExternalStore } from "react"
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+
+import { Skeleton } from "@/components/ui/skeleton"
 
 type ForecastPoint = {
   period: string
@@ -13,6 +16,16 @@ type ForecastChartProps = {
 }
 
 export function ForecastChart({ points }: ForecastChartProps) {
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false
+  )
+
+  if (!mounted) {
+    return <div className="h-80 w-full"><Skeleton className="h-full w-full" /></div>
+  }
+
   return (
     <div className="h-80 w-full">
       <ResponsiveContainer height="100%" width="100%">

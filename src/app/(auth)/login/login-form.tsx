@@ -2,7 +2,7 @@
 
 import { type FormEvent, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
@@ -16,15 +16,18 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { createClient } from "@/lib/supabase/client"
+import { extractTenantSlugFromHost } from "@/lib/tenant"
 
 export function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const hostname = typeof window !== "undefined" ? window.location.hostname : ""
-  const tenantHint = hostname.split(".").length > 2 ? hostname.split(".")[0] : null
+  const host = typeof window !== "undefined" ? window.location.host : ""
+  const tenantHint = extractTenantSlugFromHost(host)
+  const tenantMismatchError = searchParams.get("error") === "tenant_mismatch"
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -41,6 +44,46 @@ export function LoginForm() {
       setError(signInError.message)
       setIsSubmitting(false)
       return
+    }
+
+    if (tenantHint) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role, company_id")
+          .eq("id", user.id)
+          .maybeSingle<{ role: string; company_id: string | null }>()
+
+        if (profile?.role !== "super_admin") {
+          if (!profile?.company_id) {
+            await supabase.auth.signOut()
+            setError("Your account is missing a company assignment. Contact support.")
+            setIsSubmitting(false)
+            return
+          }
+
+          const { data: company } = await supabase
+            .from("companies")
+            .select("slug")
+            .eq("id", profile.company_id)
+            .maybeSingle<{ slug: string }>()
+
+          if (!company?.slug || company.slug !== tenantHint) {
+            await supabase.auth.signOut()
+            setError(
+              company?.slug
+                ? `This account belongs to \"${company.slug}\". Please sign in at that company URL.`
+                : "This account is not mapped to this company URL. Please sign in at your company URL."
+            )
+            setIsSubmitting(false)
+            return
+          }
+        }
+      }
     }
 
     router.push("/dashboard")
@@ -61,6 +104,11 @@ export function LoginForm() {
         </CardDescription>
         {tenantHint ? (
           <p className="text-xs text-slate-500">Tenant workspace: {tenantHint}</p>
+        ) : null}
+        {tenantMismatchError ? (
+          <p className="rounded-md bg-destructive/10 p-2 text-xs text-destructive">
+            This account does not belong to this company URL. Use your own company subdomain to sign in.
+          </p>
         ) : null}
       </CardHeader>
       <CardContent>

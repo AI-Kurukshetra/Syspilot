@@ -1,26 +1,44 @@
 "use client"
 
 import { Moon, Sun } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useSyncExternalStore } from "react"
 
 import { Button } from "@/components/ui/button"
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false)
-
-  useEffect(() => {
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false
+  )
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") {
+      return false
+    }
     const stored = window.localStorage.getItem("syspilot-theme")
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-    const shouldUseDark = stored ? stored === "dark" : prefersDark
+    return stored ? stored === "dark" : prefersDark
+  })
 
-    document.documentElement.classList.toggle("dark", shouldUseDark)
-  }, [])
+  useEffect(() => {
+    if (!mounted) {
+      return
+    }
+    document.documentElement.classList.toggle("dark", isDark)
+    window.localStorage.setItem("syspilot-theme", isDark ? "dark" : "light")
+  }, [isDark, mounted])
 
   const toggleTheme = () => {
-    const nextValue = !document.documentElement.classList.contains("dark")
-    setIsDark(nextValue)
-    document.documentElement.classList.toggle("dark", nextValue)
-    window.localStorage.setItem("syspilot-theme", nextValue ? "dark" : "light")
+    setIsDark((currentValue) => !currentValue)
+  }
+
+  if (!mounted) {
+    return (
+      <Button className="gap-2" size="sm" type="button" variant="outline">
+        <Moon className="size-4" />
+        Dark
+      </Button>
+    )
   }
 
   return (

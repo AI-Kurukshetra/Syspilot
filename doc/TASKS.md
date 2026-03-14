@@ -43,3 +43,6 @@
 ## Phase 6: Multi-Tenant SaaS Architecture
 - [x] Implement subdomain-aware multi-tenant foundation (slug, RLS, role model, middleware, tenant registration UX, super admin panel) (2026-03-14 16:31)
 - [x] Local signup email verification via browser inbox (`localhost` auto-open) (2026-03-14 16:59)
+- [x] Enforce company-subdomain login isolation (users can only sign in on their own tenant URL) (2026-03-14 17:36)
+- [x] Resolve lint blockers and harden tenant mismatch handling edge cases (2026-03-14 17:41)
+- [x] Fix localhost root-domain parsing for tenant slug detection (`localhost:3000` case) (2026-03-14 17:46)

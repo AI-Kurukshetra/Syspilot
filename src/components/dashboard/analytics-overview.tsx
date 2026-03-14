@@ -1,8 +1,10 @@
 "use client"
 
+import { useSyncExternalStore } from "react"
 import { Bar, BarChart, CartesianGrid, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from "recharts"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
 type OrdersByStatus = {
   status: string
@@ -22,6 +24,27 @@ type AnalyticsOverviewProps = {
 const pieColors = ["#0f172a", "#0891b2", "#059669", "#dc2626", "#d97706"]
 
 export function AnalyticsOverview({ ordersByStatus, transactionsByType }: AnalyticsOverviewProps) {
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false
+  )
+
+  if (!mounted) {
+    return (
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card className="bark-shadow glass-surface border-white/60">
+          <CardHeader><CardTitle>Sales Orders by Status</CardTitle></CardHeader>
+          <CardContent className="h-72"><Skeleton className="h-full w-full" /></CardContent>
+        </Card>
+        <Card className="bark-shadow glass-surface border-white/60">
+          <CardHeader><CardTitle>Transaction Mix</CardTitle></CardHeader>
+          <CardContent className="h-72"><Skeleton className="h-full w-full" /></CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <Card className="bark-shadow glass-surface border-white/60">

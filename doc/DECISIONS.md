@@ -69,3 +69,18 @@
 - **Decision**: In local development, auto-open a browser inbox URL (`NEXT_PUBLIC_LOCAL_MAILBOX_URL`, default `http://127.0.0.1:54324`) when signup requires email verification.
 - **Rationale**: Removes dependency on external email delivery during local testing and speeds up auth verification loops.
 - **Date**: 2026-03-14
+
+## D015: Tenant-Scoped Login Enforcement
+- **Decision**: Enforce company/subdomain matching at login boundary in middleware, and fail closed by signing users out if authenticated on a mismatched tenant URL.
+- **Rationale**: Prevents cross-tenant access attempts from ever reaching dashboard routes and provides deterministic security behavior independent of client UI.
+- **Date**: 2026-03-14
+
+## D016: Client-Mount Detection Without Effect-SetState
+- **Decision**: Replace mount gating patterns (`useEffect(() => setMounted(true), [])`) with `useSyncExternalStore` for client-only chart/theme rendering checks.
+- **Rationale**: Satisfies current React lint constraints while preserving SSR-safe fallbacks and avoiding effect-triggered cascading render anti-patterns.
+- **Date**: 2026-03-14
+
+## D017: Normalize Root Domain Host for Tenant Parsing
+- **Decision**: Normalize `NEXT_PUBLIC_ROOT_DOMAIN` with port stripping when resolving tenant slug from request host.
+- **Rationale**: Keeps tenant detection correct in local setups that use host+port roots (for example `localhost:3000`) and prevents accidental bypass of subdomain access checks.
+- **Date**: 2026-03-14

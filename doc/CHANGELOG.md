@@ -53,3 +53,12 @@
 - Added optional `NEXT_PUBLIC_LOCAL_MAILBOX_URL` in `.env.example`.
 - Updated README with local Supabase inbox verification steps (`supabase start` + browser inbox flow).
 - Updated local runtime config `.env.local` to use local Supabase URL + publishable key (`http://127.0.0.1:54321`) for development auth/signup flows.
+- Enforced subdomain login isolation:
+  - Updated `src/lib/supabase/middleware.ts` to validate authenticated user company slug against request tenant slug and force sign-out + redirect to `/login?error=tenant_mismatch` on mismatch.
+  - Updated `src/app/(auth)/login/login-form.tsx` to parse tenant slug robustly, show mismatch guidance, and perform immediate post-signin tenant verification for clearer UX.
+- Fixed lint rule violations (`react-hooks/set-state-in-effect`) by replacing effect-driven mount state with `useSyncExternalStore` in chart/theme client components:
+  - `src/components/dashboard/analytics-overview.tsx`
+  - `src/components/dashboard/forecast-chart.tsx`
+  - `src/components/dashboard/theme-toggle.tsx`
+- Hardened tenant mismatch behavior so non-super-admin users without a resolvable company slug are denied on tenant URLs and signed out safely.
+- Fixed tenant extraction when `NEXT_PUBLIC_ROOT_DOMAIN` includes a port (for example `localhost:3000`) by normalizing root-domain host parsing in `src/lib/tenant.ts`, ensuring subdomain tenant isolation works in local development (`company.localhost:3000`).

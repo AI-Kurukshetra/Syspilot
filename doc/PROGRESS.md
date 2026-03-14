@@ -13,3 +13,6 @@
 [2026-03-14 16:52] codex — Configured free Vercel alias-based tenant URL approach (`{slug}-syspilot.vercel.app`), created live alias `abc-syspilot.vercel.app`, and updated tenant URL parser/generator accordingly.
 [2026-03-14 16:59] codex — Added local-dev signup verification helper that auto-opens local inbox (`NEXT_PUBLIC_LOCAL_MAILBOX_URL`, default `http://127.0.0.1:54324`) instead of relying on external email delivery.
 [2026-03-14 17:04] codex — Switched `.env.local` from remote Supabase to local Supabase stack (`127.0.0.1:54321`) to eliminate remote auth email rate-limit during local signup testing.
+[2026-03-14 17:36] codex — Enforced tenant-scoped login: users are signed out and blocked when attempting to authenticate on a different company subdomain; login page now shows tenant-mismatch guidance.
+[2026-03-14 17:41] codex — Cleared repository lint blockers (`set-state-in-effect`) in dashboard client components and hardened tenant mismatch guards for non-super-admin accounts missing valid company slug mapping.
+[2026-03-14 17:46] codex — Fixed tenant host parsing for local subdomains by normalizing configured root domains with ports (e.g. `localhost:3000`), restoring middleware/login tenant mismatch enforcement locally.

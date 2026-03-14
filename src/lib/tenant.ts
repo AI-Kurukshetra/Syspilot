@@ -10,12 +10,13 @@ export function getRootDomain(): string {
 }
 
 function getProjectNameFromRootDomain(rootDomain: string): string | null {
+  const normalizedRootDomain = stripPort(rootDomain)
   const configuredName = process.env.NEXT_PUBLIC_VERCEL_PROJECT_NAME?.trim().toLowerCase()
   if (configuredName) {
     return configuredName
   }
 
-  const parts = rootDomain.split(".")
+  const parts = normalizedRootDomain.split(".")
   if (parts.length === 2 && parts[1] === "vercel" && parts[0]) {
     return parts[0]
   }
@@ -35,9 +36,10 @@ export function extractTenantSlugFromHost(host: string): string | null {
   }
 
   const rootDomain = getRootDomain()
-  const projectName = getProjectNameFromRootDomain(rootDomain)
+  const normalizedRootDomain = stripPort(rootDomain)
+  const projectName = getProjectNameFromRootDomain(normalizedRootDomain)
 
-  if (sanitizedHost === rootDomain) {
+  if (sanitizedHost === normalizedRootDomain) {
     return null
   }
 
@@ -51,8 +53,8 @@ export function extractTenantSlugFromHost(host: string): string | null {
     }
   }
 
-  if (sanitizedHost.endsWith(`.${rootDomain}`)) {
-    const candidate = sanitizedHost.slice(0, -(rootDomain.length + 1))
+  if (sanitizedHost.endsWith(`.${normalizedRootDomain}`)) {
+    const candidate = sanitizedHost.slice(0, -(normalizedRootDomain.length + 1))
     if (!candidate || candidate.includes(".")) {
       return null
     }

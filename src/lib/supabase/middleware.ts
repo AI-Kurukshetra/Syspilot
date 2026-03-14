@@ -3,6 +3,12 @@ import { NextResponse, type NextRequest } from "next/server"
 import { supabaseEnv } from "@/lib/supabase/env"
 import { extractTenantSlugFromHost } from "@/lib/tenant"
 
+type TenantProfileRow = {
+  role: string
+  company_id: string | null
+  companies: { slug: string } | null
+}
+
 export async function updateSession(request: NextRequest) {
   const requestHeaders = new Headers(request.headers)
   const tenantSlug = extractTenantSlugFromHost(request.headers.get("host") ?? "")
@@ -49,6 +55,30 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  if (user && tenantSlug) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, company_id, companies:company_id(slug)")
+      .eq("id", user.id)
+      .maybeSingle<TenantProfileRow>()
+
+    const isSuperAdmin = profile?.role === "super_admin"
+    const companySlug = profile?.companies?.slug ?? null
+    const hasTenantMismatch = !isSuperAdmin && companySlug !== tenantSlug
+
+    if (hasTenantMismatch) {
+      await supabase.auth.signOut()
+
+      const url = request.nextUrl.clone()
+      url.pathname = "/login"
+      url.searchParams.set("error", "tenant_mismatch")
+
+      const mismatchResponse = NextResponse.redirect(url)
+      mismatchResponse.cookies.delete("tenant_slug")
+      return mismatchResponse
+    }
+  }
 
   if (
     !user &&
