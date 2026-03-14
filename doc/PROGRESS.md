@@ -19,3 +19,4 @@
 [2026-03-14 17:58] codex — Fixed Next.js prerender error on `/login` (Vercel build) by wrapping `LoginForm` with `<Suspense>` because the form uses `useSearchParams()`.
 [2026-03-14 18:10] codex — Added a new public introduction homepage (`/`) with product overview, benefits, customer testimonials, image-rich sections, and direct Login/Register buttons linked to `/login` and `/signup`.
 [2026-03-14 18:12] codex — Enhanced homepage with sticky one-page navigation (`Features`, `Pricing`, `Contact`), added pricing section content, and enabled smooth scrolling via global CSS.
+[2026-03-14 18:19] codex — Fixed production visibility of introduction page by updating auth middleware to treat `/` as a public route (no forced redirect to `/login` for unauthenticated visitors).

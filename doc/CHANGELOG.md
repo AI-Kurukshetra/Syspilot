@@ -71,3 +71,4 @@
   - Added sticky top nav links (`Features`, `Pricing`, `Contact`) with in-page anchor routing.
   - Added a new pricing section with Starter/Growth/Enterprise plans.
   - Enabled smooth in-page scrolling by setting `scroll-behavior: smooth` on `html` in `src/app/globals.css`.
+- Updated `src/lib/supabase/middleware.ts` auth gating to keep `/` public for unauthenticated visitors, allowing the introduction page to render on deployed root domain (`syspilot.vercel.app`) instead of always redirecting to `/login`.

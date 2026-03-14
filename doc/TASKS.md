@@ -49,3 +49,4 @@
 - [x] Fix `/login` prerender build failure by adding Suspense boundary for search params usage (2026-03-14 17:58)
 - [x] Build public introduction landing page with benefits, testimonials, visuals, and login/register CTAs (2026-03-14 18:10)
 - [x] Add top navigation (`Features`, `Pricing`, `Contact`) with smooth-scroll sections on homepage (2026-03-14 18:12)
+- [x] Allow public access to `/` in middleware so deployed index shows introduction page (2026-03-14 18:19)

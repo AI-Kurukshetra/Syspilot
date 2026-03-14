@@ -99,3 +99,8 @@
 - **Decision**: Add sticky in-page navigation (`Features`, `Pricing`, `Contact`) and smooth-scroll behavior on the public homepage.
 - **Rationale**: Improves scanability and conversion flow for first-time visitors while keeping login/register actions accessible from every viewport depth.
 - **Date**: 2026-03-14
+
+## D021: Public Root Route in Auth Middleware
+- **Decision**: Exclude `/` from unauthenticated redirect logic in middleware so root marketing page remains publicly accessible.
+- **Rationale**: Prevents middleware from overriding the intended index experience and ensures production root domain serves the introduction page.
+- **Date**: 2026-03-14
