@@ -63,3 +63,11 @@
 - Hardened tenant mismatch behavior so non-super-admin users without a resolvable company slug are denied on tenant URLs and signed out safely.
 - Fixed tenant extraction when `NEXT_PUBLIC_ROOT_DOMAIN` includes a port (for example `localhost:3000`) by normalizing root-domain host parsing in `src/lib/tenant.ts`, ensuring subdomain tenant isolation works in local development (`company.localhost:3000`).
 - Fixed Vercel/Next.js prerender failure for `/login` by wrapping `LoginForm` in `Suspense` in `src/app/(auth)/login/page.tsx` (required because `LoginForm` reads query params with `useSearchParams()`).
+- Replaced root route behavior with a public, marketing-style introduction page:
+  - Added `src/app/page.tsx` with hero content, application benefits, customer testimonials, and dual CTAs for `Login` and `Register`.
+  - Added attractive visual sections using existing dashboard screenshots and responsive `next/image` rendering.
+  - Removed `src/app/(dashboard)/page.tsx` root redirect to avoid route conflict and keep `/` publicly accessible.
+- Enhanced homepage IA and navigation:
+  - Added sticky top nav links (`Features`, `Pricing`, `Contact`) with in-page anchor routing.
+  - Added a new pricing section with Starter/Growth/Enterprise plans.
+  - Enabled smooth in-page scrolling by setting `scroll-behavior: smooth` on `html` in `src/app/globals.css`.

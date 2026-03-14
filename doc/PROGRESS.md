@@ -17,3 +17,5 @@
 [2026-03-14 17:41] codex — Cleared repository lint blockers (`set-state-in-effect`) in dashboard client components and hardened tenant mismatch guards for non-super-admin accounts missing valid company slug mapping.
 [2026-03-14 17:46] codex — Fixed tenant host parsing for local subdomains by normalizing configured root domains with ports (e.g. `localhost:3000`), restoring middleware/login tenant mismatch enforcement locally.
 [2026-03-14 17:58] codex — Fixed Next.js prerender error on `/login` (Vercel build) by wrapping `LoginForm` with `<Suspense>` because the form uses `useSearchParams()`.
+[2026-03-14 18:10] codex — Added a new public introduction homepage (`/`) with product overview, benefits, customer testimonials, image-rich sections, and direct Login/Register buttons linked to `/login` and `/signup`.
+[2026-03-14 18:12] codex — Enhanced homepage with sticky one-page navigation (`Features`, `Pricing`, `Contact`), added pricing section content, and enabled smooth scrolling via global CSS.

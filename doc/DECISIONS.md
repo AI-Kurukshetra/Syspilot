@@ -89,3 +89,13 @@
 - **Decision**: Wrap the login client form in `<Suspense>` at the page boundary because it uses `useSearchParams()`.
 - **Rationale**: Prevents static prerender/export failure for `/login` in production builds while preserving tenant-mismatch error rendering via query params.
 - **Date**: 2026-03-14
+
+## D019: Public Marketing Homepage at Root Route
+- **Decision**: Use `/` as a public introduction page (hero, benefits, testimonials, visual previews, Login/Register CTAs) and keep authenticated workspaces under `/dashboard` and module routes.
+- **Rationale**: Improves first-time user onboarding and product communication while preserving clean separation between pre-auth marketing and post-auth ERP operations.
+- **Date**: 2026-03-14
+
+## D020: One-Page Marketing Navigation
+- **Decision**: Add sticky in-page navigation (`Features`, `Pricing`, `Contact`) and smooth-scroll behavior on the public homepage.
+- **Rationale**: Improves scanability and conversion flow for first-time visitors while keeping login/register actions accessible from every viewport depth.
+- **Date**: 2026-03-14

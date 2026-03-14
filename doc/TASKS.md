@@ -47,3 +47,5 @@
 - [x] Resolve lint blockers and harden tenant mismatch handling edge cases (2026-03-14 17:41)
 - [x] Fix localhost root-domain parsing for tenant slug detection (`localhost:3000` case) (2026-03-14 17:46)
 - [x] Fix `/login` prerender build failure by adding Suspense boundary for search params usage (2026-03-14 17:58)
+- [x] Build public introduction landing page with benefits, testimonials, visuals, and login/register CTAs (2026-03-14 18:10)
+- [x] Add top navigation (`Features`, `Pricing`, `Contact`) with smooth-scroll sections on homepage (2026-03-14 18:12)
