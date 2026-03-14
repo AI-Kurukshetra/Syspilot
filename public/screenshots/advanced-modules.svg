@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" fill="none">
+  <rect width="1440" height="900" fill="#0B1020"/>
+  <rect x="32" y="32" width="1376" height="836" rx="28" fill="#111827"/>
+  <rect x="72" y="92" width="410" height="320" rx="18" fill="#1E3A8A"/>
+  <rect x="514" y="92" width="410" height="320" rx="18" fill="#0EA5A4"/>
+  <rect x="956" y="92" width="380" height="320" rx="18" fill="#2563EB"/>
+  <rect x="72" y="446" width="1264" height="360" rx="18" fill="#1E293B"/>
+  <text x="72" y="70" fill="#F8FAFC" font-family="Arial" font-size="24" font-weight="700">Phase 3: BOM, Quality Control, AI Forecasting</text>
+</svg>
