@@ -1,14 +1,14 @@
 # SysPilot — Master Task List
 
 ## Phase 0: Foundation
-- [ ] Initialize Next.js 15 + TypeScript + Tailwind + pnpm
-- [ ] Install dependencies (Supabase, shadcn, recharts, zod, etc.)
+- [x] Initialize Next.js 15 + TypeScript + Tailwind + pnpm
+- [x] Install dependencies (Supabase, shadcn, recharts, zod, etc.)
 - [x] Set up Supabase client files (client.ts, server.ts, middleware.ts) (2026-03-14 13:25)
 - [x] Set up root middleware.ts for auth protection (2026-03-14 13:25)
 - [x] Create .env.local with Supabase credentials (2026-03-14 13:25)
 - [x] Run supabase-schema.sql in Supabase SQL Editor / via migration push (2026-03-14 14:05)
-- [ ] Deploy to Vercel (initial)
-- [ ] Copy AGENTS.md to repo root
+- [x] Deploy to Vercel (initial)
+- [x] Copy AGENTS.md to repo root
 
 ## Phase 1: Auth + Layout
 - [x] Login page with email/password (2026-03-14 13:04)

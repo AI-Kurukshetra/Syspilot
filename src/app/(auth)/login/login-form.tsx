@@ -55,7 +55,7 @@ export function LoginForm() {
       <CardHeader>
         <CardTitle className="text-xl text-slate-900">Sign in to SysPilot</CardTitle>
         <CardDescription className="text-slate-600">
-          Continue into your bark-blue operations workspace.
+          Continue into your intelligent operations workspace.
         </CardDescription>
       </CardHeader>
       <CardContent>

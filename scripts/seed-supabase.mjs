@@ -17,6 +17,185 @@ function isEmailConfirmationError(message) {
   return message.toLowerCase().includes("email not confirmed")
 }
 
+const supplierCatalog = [
+  { name: "Apex Steel & Alloys", contact: "Mason Rivera", city: "Chicago" },
+  { name: "Blue Ridge Components", contact: "Emma Collins", city: "Charlotte" },
+  { name: "Summit Industrial Supply", contact: "Noah Patel", city: "Denver" },
+  { name: "Northline Fabrication", contact: "Olivia Brooks", city: "Detroit" },
+  { name: "Titan Precision Metals", contact: "Liam Turner", city: "Cleveland" },
+  { name: "Everest Bearing Works", contact: "Sophia Bennett", city: "Pittsburgh" },
+  { name: "Harbor Motion Systems", contact: "Lucas Perry", city: "Seattle" },
+  { name: "Ironwood Process Tech", contact: "Ava Reed", city: "St. Louis" },
+  { name: "Metro Valve & Flow", contact: "Ethan Carter", city: "Atlanta" },
+  { name: "Frontier Tooling Group", contact: "Mia Hayes", city: "Phoenix" },
+  { name: "Polar Gasket Industries", contact: "James Foster", city: "Minneapolis" },
+  { name: "Delta Industrial Electric", contact: "Isabella Price", city: "Nashville" },
+  { name: "Prairie Automation Parts", contact: "Henry Murphy", city: "Kansas City" },
+  { name: "Keystone Pump Components", contact: "Amelia Ross", city: "Philadelphia" },
+  { name: "Pacific Material Solutions", contact: "Benjamin Ward", city: "San Diego" },
+  { name: "Redwood Hydraulics", contact: "Harper Kelly", city: "Sacramento" },
+  { name: "Midwest Transmission Co.", contact: "Elijah Gray", city: "Indianapolis" },
+  { name: "FoundryLink Components", contact: "Evelyn Cox", city: "Milwaukee" },
+  { name: "Vertex Industrial Bearings", contact: "Daniel Morris", city: "Columbus" },
+  { name: "Granite Machine Supplies", contact: "Scarlett Diaz", city: "Salt Lake City" },
+]
+
+const customerCatalog = [
+  "Atlas Foods Manufacturing",
+  "Brightline Packaging",
+  "Cedar Valley Equipment",
+  "Nova Auto Components",
+  "Evergreen Processors",
+  "Summit Beverage Works",
+  "Helios Energy Systems",
+  "IronPeak Construction",
+  "Bluewater Marine Tech",
+  "Meridian Pharma Labs",
+  "Northstar Retail Logistics",
+  "Sterling Medical Devices",
+  "Harbor Freight Networks",
+  "Asteria Consumer Goods",
+  "Oakridge Furniture Co.",
+  "Pioneer Plastics Group",
+  "Westfield Agro Industries",
+  "Lighthouse Chemical Works",
+  "Vertex Smart Appliances",
+  "ClearPath Mobility",
+  "Glenwood Home Products",
+  "Aurora Textiles",
+  "Silverline Defense Tech",
+  "Horizon Telecom Hardware",
+  "Bridgeport HVAC Systems",
+  "Pacific Fresh Foods",
+  "Summit Solar Manufacturing",
+  "Magnum Industrial Robotics",
+  "Riverstone Paper Mills",
+  "PrimeCore Electronics",
+  "Golden Gate Hospitality Supply",
+  "Blackstone Mining Equipments",
+  "Delta Rail Components",
+  "Cloudline Aerospace Parts",
+  "Canyon Outdoor Gear",
+  "UrbanGrid Infrastructure",
+  "Fusion Biotech Instruments",
+  "Greenfield Dairy Systems",
+  "Omni Secure Solutions",
+  "Velocity E-Bike Assembly",
+  "MetroBuild Materials",
+  "Ridgeview Ceramics",
+  "NovaPulse Semiconductors",
+  "Edgewater Water Systems",
+  "BrightForge Lighting",
+  "Aspire Office Furniture",
+  "Zenith Cold Chain Logistics",
+  "TerraForm Agricultural Tech",
+  "Inland Marine Engines",
+  "Coreline Industrial Printing",
+]
+
+const productCatalog = [
+  { sku: "RM-STEEL-COIL-A36", name: "A36 Steel Coil", category: "raw_material", unit: "KG", cost: 2.8 },
+  { sku: "RM-ALUM-SHEET-5052", name: "5052 Aluminum Sheet", category: "raw_material", unit: "KG", cost: 4.6 },
+  { sku: "RM-COPPER-BAR-C110", name: "C110 Copper Bar", category: "raw_material", unit: "KG", cost: 8.2 },
+  { sku: "RM-RUBBER-NBR", name: "NBR Industrial Rubber Roll", category: "raw_material", unit: "M", cost: 6.5 },
+  { sku: "RM-ABS-PELLET", name: "ABS Resin Pellets", category: "raw_material", unit: "KG", cost: 2.3 },
+  { sku: "RM-PP-PELLET", name: "Polypropylene Pellets", category: "raw_material", unit: "KG", cost: 2.1 },
+  { sku: "RM-SS-PIPE-304", name: "304 Stainless Pipe", category: "raw_material", unit: "M", cost: 11.4 },
+  { sku: "RM-BRASS-ROD", name: "Brass Rod Stock", category: "raw_material", unit: "KG", cost: 7.9 },
+  { sku: "RM-NYLON-BAR", name: "Nylon Round Bar", category: "raw_material", unit: "M", cost: 5.2 },
+  { sku: "RM-CARBON-FIBER", name: "Carbon Fiber Fabric", category: "raw_material", unit: "M", cost: 18.5 },
+  { sku: "CP-BRG-6205", name: "Deep Groove Bearing 6205", category: "component", unit: "EA", cost: 9.8 },
+  { sku: "CP-BRG-6208", name: "Deep Groove Bearing 6208", category: "component", unit: "EA", cost: 13.4 },
+  { sku: "CP-SHAFT-25MM", name: "Hardened Shaft 25mm", category: "component", unit: "EA", cost: 22.6 },
+  { sku: "CP-SHAFT-40MM", name: "Hardened Shaft 40mm", category: "component", unit: "EA", cost: 31.2 },
+  { sku: "CP-VALVE-BALL-1IN", name: "1in Ball Valve", category: "component", unit: "EA", cost: 15.7 },
+  { sku: "CP-VALVE-CHECK-1IN", name: "1in Check Valve", category: "component", unit: "EA", cost: 17.1 },
+  { sku: "CP-GASKET-PTFE-50", name: "PTFE Gasket 50mm", category: "component", unit: "EA", cost: 3.2 },
+  { sku: "CP-SEAL-VITON-45", name: "Viton Oil Seal 45mm", category: "component", unit: "EA", cost: 4.9 },
+  { sku: "CP-COUPLING-FLEX-30", name: "Flexible Coupling 30mm", category: "component", unit: "EA", cost: 12.3 },
+  { sku: "CP-COUPLING-FLEX-45", name: "Flexible Coupling 45mm", category: "component", unit: "EA", cost: 16.9 },
+  { sku: "CP-CHAIN-08B", name: "Roller Chain 08B", category: "component", unit: "M", cost: 8.6 },
+  { sku: "CP-SPROCKET-20T", name: "Sprocket 20T", category: "component", unit: "EA", cost: 11.4 },
+  { sku: "CP-SPROCKET-28T", name: "Sprocket 28T", category: "component", unit: "EA", cost: 13.2 },
+  { sku: "CP-GEAR-HELICAL-2M", name: "Helical Gear 2M", category: "component", unit: "EA", cost: 19.8 },
+  { sku: "CP-GEAR-SPUR-1.5M", name: "Spur Gear 1.5M", category: "component", unit: "EA", cost: 14.6 },
+  { sku: "CP-MOTOR-1.5KW", name: "1.5kW AC Motor", category: "component", unit: "EA", cost: 148 },
+  { sku: "CP-MOTOR-3KW", name: "3kW AC Motor", category: "component", unit: "EA", cost: 219 },
+  { sku: "CP-DRIVE-VFD-2.2KW", name: "VFD Drive 2.2kW", category: "component", unit: "EA", cost: 196 },
+  { sku: "CP-SENSOR-PROX-M12", name: "M12 Proximity Sensor", category: "component", unit: "EA", cost: 24.5 },
+  { sku: "CP-SENSOR-PRESS-10BAR", name: "Pressure Sensor 10bar", category: "component", unit: "EA", cost: 38.9 },
+  { sku: "CS-COOLANT-SYNTH", name: "Synthetic Coolant 20L", category: "consumable", unit: "EA", cost: 56 },
+  { sku: "CS-LUBE-ISO46", name: "Hydraulic Oil ISO 46", category: "consumable", unit: "L", cost: 4.2 },
+  { sku: "CS-GREASE-EP2", name: "EP2 Bearing Grease", category: "consumable", unit: "KG", cost: 6.1 },
+  { sku: "CS-CUTTER-CARBIDE-10", name: "Carbide End Mill 10mm", category: "consumable", unit: "EA", cost: 27.4 },
+  { sku: "CS-CUTTER-CARBIDE-16", name: "Carbide End Mill 16mm", category: "consumable", unit: "EA", cost: 39.1 },
+  { sku: "CS-FILTER-OIL-400", name: "Hydraulic Oil Filter 400", category: "consumable", unit: "EA", cost: 8.3 },
+  { sku: "CS-FILTER-AIR-220", name: "Compressor Air Filter 220", category: "consumable", unit: "EA", cost: 10.6 },
+  { sku: "CS-WIRE-ER70S", name: "Welding Wire ER70S", category: "consumable", unit: "KG", cost: 5.7 },
+  { sku: "CS-ELECTRODE-E6013", name: "Electrode E6013 Pack", category: "consumable", unit: "BOX", cost: 18.5 },
+  { sku: "CS-PACK-STRETCH-ROLL", name: "Stretch Wrap Roll", category: "consumable", unit: "EA", cost: 9.2 },
+  { sku: "WIP-PUMP-HOUSING", name: "Pump Housing Assembly", category: "wip", unit: "EA", cost: 84 },
+  { sku: "WIP-IMPELLER-ASSY", name: "Impeller Sub-Assembly", category: "wip", unit: "EA", cost: 49 },
+  { sku: "WIP-SHAFT-MODULE", name: "Drive Shaft Module", category: "wip", unit: "EA", cost: 66 },
+  { sku: "WIP-CONTROL-PANEL", name: "Control Panel Sub-Assembly", category: "wip", unit: "EA", cost: 112 },
+  { sku: "WIP-FRAME-WELDED", name: "Welded Frame Assembly", category: "wip", unit: "EA", cost: 71 },
+  { sku: "WIP-VALVE-BLOCK", name: "Valve Block Unit", category: "wip", unit: "EA", cost: 58 },
+  { sku: "WIP-GEARBOX-ASSY", name: "Gearbox Assembly", category: "wip", unit: "EA", cost: 136 },
+  { sku: "WIP-DRIVE-MODULE", name: "Drive Module Assembly", category: "wip", unit: "EA", cost: 124 },
+  { sku: "WIP-SEAL-CARTRIDGE", name: "Seal Cartridge Assembly", category: "wip", unit: "EA", cost: 45 },
+  { sku: "WIP-MOTOR-BRACKET", name: "Motor Bracket Assembly", category: "wip", unit: "EA", cost: 37 },
+  { sku: "FG-HYD-PUMP-P100", name: "Hydraulic Pump P100", category: "finished_good", unit: "EA", cost: 212 },
+  { sku: "FG-HYD-PUMP-P200", name: "Hydraulic Pump P200", category: "finished_good", unit: "EA", cost: 265 },
+  { sku: "FG-HYD-PUMP-P300", name: "Hydraulic Pump P300", category: "finished_good", unit: "EA", cost: 318 },
+  { sku: "FG-GEARBOX-GX40", name: "Industrial Gearbox GX40", category: "finished_good", unit: "EA", cost: 284 },
+  { sku: "FG-GEARBOX-GX60", name: "Industrial Gearbox GX60", category: "finished_good", unit: "EA", cost: 349 },
+  { sku: "FG-ACTUATOR-A12", name: "Linear Actuator A12", category: "finished_good", unit: "EA", cost: 194 },
+  { sku: "FG-ACTUATOR-A20", name: "Linear Actuator A20", category: "finished_good", unit: "EA", cost: 226 },
+  { sku: "FG-VALVE-CTRL-V10", name: "Control Valve V10", category: "finished_good", unit: "EA", cost: 167 },
+  { sku: "FG-VALVE-CTRL-V22", name: "Control Valve V22", category: "finished_good", unit: "EA", cost: 214 },
+  { sku: "FG-MIXER-IND-M5", name: "Industrial Mixer M5", category: "finished_good", unit: "EA", cost: 402 },
+  { sku: "FG-MIXER-IND-M8", name: "Industrial Mixer M8", category: "finished_good", unit: "EA", cost: 456 },
+  { sku: "FG-COMP-AIR-C15", name: "Air Compressor C15", category: "finished_good", unit: "EA", cost: 523 },
+  { sku: "FG-COMP-AIR-C25", name: "Air Compressor C25", category: "finished_good", unit: "EA", cost: 618 },
+  { sku: "FG-CHILLER-CH10", name: "Process Chiller CH10", category: "finished_good", unit: "EA", cost: 711 },
+  { sku: "FG-CHILLER-CH20", name: "Process Chiller CH20", category: "finished_good", unit: "EA", cost: 836 },
+  { sku: "FG-FILTER-UNIT-F90", name: "Filtration Unit F90", category: "finished_good", unit: "EA", cost: 276 },
+  { sku: "FG-FILTER-UNIT-F120", name: "Filtration Unit F120", category: "finished_good", unit: "EA", cost: 341 },
+  { sku: "FG-ROBOT-ARM-R4", name: "Material Handling Arm R4", category: "finished_good", unit: "EA", cost: 1280 },
+  { sku: "FG-ROBOT-ARM-R7", name: "Material Handling Arm R7", category: "finished_good", unit: "EA", cost: 1670 },
+  { sku: "CP-BOLT-M8-ZN", name: "Hex Bolt M8 Zinc", category: "component", unit: "BOX", cost: 12.8 },
+  { sku: "CP-BOLT-M12-ZN", name: "Hex Bolt M12 Zinc", category: "component", unit: "BOX", cost: 18.6 },
+  { sku: "CP-NUT-M8-ZN", name: "Hex Nut M8 Zinc", category: "component", unit: "BOX", cost: 8.4 },
+  { sku: "CP-NUT-M12-ZN", name: "Hex Nut M12 Zinc", category: "component", unit: "BOX", cost: 11.7 },
+  { sku: "CP-WASHER-M8", name: "Flat Washer M8", category: "component", unit: "BOX", cost: 6.9 },
+  { sku: "CP-WASHER-M12", name: "Flat Washer M12", category: "component", unit: "BOX", cost: 8.2 },
+  { sku: "CP-SPRING-COMPRESSION-30", name: "Compression Spring 30mm", category: "component", unit: "EA", cost: 2.6 },
+  { sku: "CP-SPRING-COMPRESSION-45", name: "Compression Spring 45mm", category: "component", unit: "EA", cost: 3.7 },
+  { sku: "CP-HOSE-HYD-10MM", name: "Hydraulic Hose 10mm", category: "component", unit: "M", cost: 5.4 },
+  { sku: "CP-HOSE-HYD-16MM", name: "Hydraulic Hose 16mm", category: "component", unit: "M", cost: 8.1 },
+  { sku: "RM-PAINT-POWDER-BLUE", name: "Powder Coat Blue", category: "raw_material", unit: "KG", cost: 7.3 },
+  { sku: "RM-PAINT-POWDER-BLACK", name: "Powder Coat Black", category: "raw_material", unit: "KG", cost: 7.1 },
+  { sku: "CS-PACK-CARTON-L", name: "Shipping Carton Large", category: "consumable", unit: "EA", cost: 2.9 },
+  { sku: "CS-PACK-CARTON-M", name: "Shipping Carton Medium", category: "consumable", unit: "EA", cost: 2.1 },
+  { sku: "CS-LABEL-RFID", name: "RFID Inventory Label", category: "consumable", unit: "PKG", cost: 16.4 },
+  { sku: "CS-TAPE-IND-HEAVY", name: "Industrial Tape Heavy Duty", category: "consumable", unit: "EA", cost: 4.8 },
+  { sku: "WIP-PUMP-TEST-RIG", name: "Pump Test Rig Assembly", category: "wip", unit: "EA", cost: 158 },
+  { sku: "WIP-COMP-SKID-BASE", name: "Compressor Skid Base", category: "wip", unit: "EA", cost: 142 },
+  { sku: "WIP-COOLING-MODULE", name: "Cooling Module Assembly", category: "wip", unit: "EA", cost: 173 },
+  { sku: "FG-POWER-PACK-H150", name: "Hydraulic Power Pack H150", category: "finished_good", unit: "EA", cost: 936 },
+  { sku: "FG-POWER-PACK-H220", name: "Hydraulic Power Pack H220", category: "finished_good", unit: "EA", cost: 1184 },
+  { sku: "FG-AGITATOR-AQ30", name: "Tank Agitator AQ30", category: "finished_good", unit: "EA", cost: 624 },
+  { sku: "FG-AGITATOR-AQ50", name: "Tank Agitator AQ50", category: "finished_good", unit: "EA", cost: 782 },
+  { sku: "CP-PANEL-HMI-7IN", name: "HMI Touch Panel 7in", category: "component", unit: "EA", cost: 259 },
+  { sku: "CP-PLC-MODULE-24IO", name: "PLC Module 24 IO", category: "component", unit: "EA", cost: 321 },
+  { sku: "CP-SWITCH-SAFETY", name: "Safety Interlock Switch", category: "component", unit: "EA", cost: 29.7 },
+  { sku: "CP-RELAY-24V", name: "Control Relay 24V", category: "component", unit: "EA", cost: 6.3 },
+  { sku: "RM-CAST-IRON-BLOCK", name: "Cast Iron Block", category: "raw_material", unit: "KG", cost: 3.9 },
+  { sku: "RM-POLYCARB-SHEET", name: "Polycarbonate Sheet", category: "raw_material", unit: "M", cost: 12.1 },
+  { sku: "CS-SOLVENT-DEGREASER", name: "Degreasing Solvent 5L", category: "consumable", unit: "EA", cost: 19.5 },
+  { sku: "CS-GLOVE-NITRILE", name: "Nitrile Gloves Pack", category: "consumable", unit: "BOX", cost: 7.4 },
+]
+
 function chunkArray(items, chunkSize) {
   const chunks = []
   for (let index = 0; index < items.length; index += chunkSize) {
@@ -216,13 +395,20 @@ async function run() {
 
   const supplierRows = Array.from({ length: 20 }, (_, index) => {
     const supplierNumber = String(index + 1).padStart(3, "0")
+    const supplierInfo = supplierCatalog[index % supplierCatalog.length]
+    const emailHandle = supplierInfo.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ".")
+      .replace(/(^\.)|(\.$)/g, "")
+
     return {
       company_id: companyId,
       code: `SUP-${supplierNumber}`,
-      name: `Supplier ${supplierNumber}`,
-      contact_person: `Contact ${supplierNumber}`,
-      email: `supplier${supplierNumber}@example.com`,
+      name: supplierInfo.name,
+      contact_person: supplierInfo.contact,
+      email: `${emailHandle}@example.com`,
       phone: `+1-555-81${String(index).padStart(2, "0")}`,
+      city: supplierInfo.city,
       country: "US",
       rating: 3.5 + (index % 3) * 0.5,
       lead_time_days: 5 + (index % 10),
@@ -241,12 +427,18 @@ async function run() {
 
   const customerRows = Array.from({ length: 50 }, (_, index) => {
     const customerNumber = String(index + 1).padStart(3, "0")
+    const customerName = customerCatalog[index % customerCatalog.length]
+    const emailHandle = customerName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ".")
+      .replace(/(^\.)|(\.$)/g, "")
+
     return {
       company_id: companyId,
       code: `CUST-${customerNumber}`,
-      name: `Customer ${customerNumber}`,
-      contact_person: `Buyer ${customerNumber}`,
-      email: `customer${customerNumber}@example.com`,
+      name: customerName,
+      contact_person: `Procurement Lead ${String(index + 11).padStart(2, "0")}`,
+      email: `${emailHandle}@example.com`,
       phone: `+1-555-90${String(index).padStart(2, "0")}`,
       country: "US",
       credit_limit: 15000 + index * 600,
@@ -263,27 +455,32 @@ async function run() {
 
   const customerIds = customers.map((row) => row.id)
 
-  const categories = ["raw_material", "wip", "finished_good", "component", "consumable"]
-  const uoms = ["EA", "KG", "LB", "BOX", "PKG"]
+  const productRows = productCatalog.map((product, index) => {
+    const baseCost = Number(product.cost)
+    const markupFactor =
+      product.category === "finished_good"
+        ? 1.52
+        : product.category === "wip"
+          ? 1.36
+          : 1.24
 
-  const productRows = Array.from({ length: 100 }, (_, index) => {
-    const productNumber = String(index + 1).padStart(3, "0")
-    const baseCost = 8 + (index % 25) * 3.5
+    const quantityOnHand = 70 + (index % 12) * 14
+    const reorderLevel = 18 + (index % 8) * 4
 
     return {
       company_id: companyId,
-      sku: `PRD-${productNumber}`,
-      name: `Product ${productNumber}`,
-      description: `Seeded product ${productNumber}`,
-      category: categories[index % categories.length],
-      unit_of_measure: uoms[index % uoms.length],
-      quantity_on_hand: 80 + (index % 11) * 15,
-      reorder_level: 20 + (index % 7) * 4,
-      reorder_quantity: 60 + (index % 9) * 10,
+      sku: product.sku,
+      name: product.name,
+      description: `${product.name} for industrial manufacturing operations`,
+      category: product.category,
+      unit_of_measure: product.unit,
+      quantity_on_hand: quantityOnHand,
+      reorder_level: reorderLevel,
+      reorder_quantity: reorderLevel * 3,
       unit_cost: Number(baseCost.toFixed(2)),
-      selling_price: Number((baseCost * 1.45).toFixed(2)),
-      overhead_cost: Number((baseCost * 0.18).toFixed(2)),
-      labor_cost_per_unit: Number((baseCost * 0.14).toFixed(2)),
+      selling_price: Number((baseCost * markupFactor).toFixed(2)),
+      overhead_cost: Number((baseCost * 0.17).toFixed(2)),
+      labor_cost_per_unit: Number((baseCost * 0.13).toFixed(2)),
       facility_id: facilityIds[index % facilityIds.length],
       supplier_id: supplierIds[index % supplierIds.length],
       is_active: true,

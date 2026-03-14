@@ -106,7 +106,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
 
             <header className="mb-6 flex flex-col gap-3 border-b border-slate-300/40 pb-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.2em] text-blue-700/80">Bark Blue Workspace</p>
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-blue-700/80">Intelligent Workspace</p>
                 <h1 className="text-xl font-semibold tracking-tight text-slate-900">Enterprise Resource Hub</h1>
               </div>
               <div className="flex items-center gap-2">
