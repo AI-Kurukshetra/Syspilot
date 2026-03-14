@@ -11,8 +11,10 @@ import {
   Factory,
   Gauge,
   Receipt,
+  ShieldCheck,
   ShoppingCart,
   SquareStack,
+  Users,
   Wallet,
 } from "lucide-react"
 
@@ -37,6 +39,8 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   "/bom": SquareStack,
   "/quality": Receipt,
   "/ai-forecasting": ChartColumn,
+  "/users": Users,
+  "/super-admin": ShieldCheck,
 }
 
 export function SidebarNav({ items }: SidebarNavProps) {

@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { cookies } from "next/headers"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -33,6 +34,7 @@ type DashboardLayoutProps = {
 
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const supabase = await createClient()
+  const cookieStore = await cookies()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -43,12 +45,29 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, role")
+    .select("full_name, role, company_id")
     .eq("id", user.id)
     .maybeSingle()
 
   const displayName = profile?.full_name ?? user.email ?? "User"
   const displayRole = profile?.role ?? "user"
+  const isSuperAdmin = displayRole === "super_admin"
+  const canManageUsers = displayRole === "company_admin" || isSuperAdmin
+  const activeCompanyId = cookieStore.get("active_company_id")?.value ?? profile?.company_id ?? null
+
+  const { data: activeCompany } = activeCompanyId
+    ? await supabase.from("companies").select("id, name, slug").eq("id", activeCompanyId).maybeSingle()
+    : { data: null }
+
+  const { data: scopeCompanies } = isSuperAdmin
+    ? await supabase.from("companies").select("id, name, slug").order("name")
+    : { data: [] }
+
+  const navigationLinks = [
+    ...moduleLinks,
+    ...(canManageUsers ? [{ href: "/users", label: "Users" }] : []),
+    ...(isSuperAdmin ? [{ href: "/super-admin", label: "Super Admin" }] : []),
+  ]
   const initials = displayName
     .split(" ")
     .map((part: string) => part[0])
@@ -62,6 +81,41 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     const serverClient = await createClient()
     await serverClient.auth.signOut()
     redirect("/login")
+  }
+
+  async function setCompanyScopeAction(formData: FormData) {
+    "use server"
+
+    const companyId = String(formData.get("company_id") ?? "")
+
+    const actionSupabase = await createClient()
+    const {
+      data: { user: actionUser },
+    } = await actionSupabase.auth.getUser()
+
+    if (!actionUser) {
+      redirect("/login")
+    }
+
+    const { data: actionProfile } = await actionSupabase
+      .from("profiles")
+      .select("role")
+      .eq("id", actionUser.id)
+      .maybeSingle()
+
+    if (actionProfile?.role !== "super_admin") {
+      throw new Error("Only super admins can switch company scope")
+    }
+
+    const cookieActionStore = await cookies()
+    cookieActionStore.set("active_company_id", companyId, {
+      path: "/",
+      sameSite: "lax",
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+    })
+
+    redirect("/dashboard")
   }
 
   return (
@@ -78,7 +132,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
             </div>
           </div>
 
-          <SidebarNav items={moduleLinks} />
+          <SidebarNav items={navigationLinks} />
 
           <div className="mt-6 rounded-2xl border border-white/15 bg-white/8 p-3">
             <div className="mb-3 flex items-center gap-3">
@@ -88,11 +142,39 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-white">{displayName}</p>
                 <p className="text-xs text-cyan-100/70 capitalize">{displayRole}</p>
+                {activeCompany ? (
+                  <p className="truncate text-[11px] text-cyan-100/65">
+                    Scope: {activeCompany.name} ({activeCompany.slug})
+                  </p>
+                ) : null}
               </div>
             </div>
 
+            {isSuperAdmin ? (
+              <form action={setCompanyScopeAction} className="mb-3 space-y-2">
+                <label className="block text-xs text-cyan-100/70" htmlFor="companyScope">
+                  Company Scope
+                </label>
+                <select
+                  className="h-8 w-full rounded-lg border border-white/20 bg-white/10 px-2 text-xs text-white"
+                  defaultValue={activeCompanyId ?? ""}
+                  id="companyScope"
+                  name="company_id"
+                >
+                  {(scopeCompanies ?? []).map((company) => (
+                    <option key={company.id} value={company.id}>
+                      {company.name} ({company.slug})
+                    </option>
+                  ))}
+                </select>
+                <Button className="w-full" size="sm" type="submit" variant="secondary">
+                  Apply Scope
+                </Button>
+              </form>
+            ) : null}
+
             <form action={logoutAction}>
-              <Button className="w-full border-cyan-100/40 text-white hover:bg-cyan-300/20" type="submit" variant="outline">
+              <Button className="w-full border-cyan-100/40 text-white hover:bg-cyan-300/20 bg-transparent hover:text-white" type="submit" variant="outline">
                 Logout
               </Button>
             </form>

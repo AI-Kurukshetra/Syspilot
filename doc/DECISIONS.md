@@ -54,3 +54,18 @@
 - **Decision**: Seed large datasets using chunked upserts/inserts with deterministic identifiers.
 - **Rationale**: Supports repeatable demo environments with realistic volume while keeping reruns safe and predictable.
 - **Date**: 2026-03-14
+
+## D012: Admin-Scoped User Management
+- **Decision**: Implement user administration as an admin-only dashboard route (`/users`) that only manages `manager` and `user` profile records, and keep password changes self-service (`auth.updateUser`) for the currently signed-in admin.
+- **Rationale**: Delivers required control boundaries without introducing service-role credentials into client code, while preserving existing Supabase anon-key security posture.
+- **Date**: 2026-03-14
+
+## D013: Subdomain Multi-Tenant Model
+- **Decision**: Move from single-tenant `admin` model to SaaS tenancy with company `slug`, role hierarchy (`super_admin`, `company_admin`, `manager`, `user`), strict `company_id` RLS isolation, and middleware tenant-slug resolution.
+- **Rationale**: Enables secure tenant separation by default while keeping one global super admin capable of cross-tenant operations and company scope switching from the UI.
+- **Date**: 2026-03-14
+
+## D014: Local Email Verification UX
+- **Decision**: In local development, auto-open a browser inbox URL (`NEXT_PUBLIC_LOCAL_MAILBOX_URL`, default `http://127.0.0.1:54324`) when signup requires email verification.
+- **Rationale**: Removes dependency on external email delivery during local testing and speeds up auth verification loops.
+- **Date**: 2026-03-14

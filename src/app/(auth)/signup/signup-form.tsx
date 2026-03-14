@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import slugify from "slugify"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -23,22 +24,46 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
-
-type UserRole = "admin" | "manager" | "user"
+import { toTenantLoginUrl } from "@/lib/tenant"
 
 export function SignupForm() {
   const router = useRouter()
   const [fullName, setFullName] = useState("")
+  const [companyName, setCompanyName] = useState("")
+  const [companySlug, setCompanySlug] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [role, setRole] = useState<UserRole>("user")
+  const [industry, setIndustry] = useState("Manufacturing")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
-  
-  const handleRoleChange = (value: string) => {
-    if (value === "admin" || value === "manager" || value === "user") {
-      setRole(value)
+  const [localInboxUrl, setLocalInboxUrl] = useState<string | null>(null)
+
+  const normalizedSlug = slugify(companySlug || companyName, {
+    lower: true,
+    strict: true,
+    trim: true,
+  })
+  const previewLoginUrl = toTenantLoginUrl(normalizedSlug || "your-company")
+
+  const isLocalHost =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+
+  const localMailboxUrl =
+    process.env.NEXT_PUBLIC_LOCAL_MAILBOX_URL?.trim() || "http://127.0.0.1:54324"
+
+  const handleCompanyNameChange = (value: string) => {
+    setCompanyName(value)
+
+    if (!companySlug) {
+      setCompanySlug(
+        slugify(value, {
+          lower: true,
+          strict: true,
+          trim: true,
+        })
+      )
     }
   }
 
@@ -61,7 +86,10 @@ export function SignupForm() {
         emailRedirectTo,
         data: {
           full_name: fullName,
-          role,
+          role: "company_admin",
+          company_name: companyName,
+          company_slug: normalizedSlug,
+          industry,
         },
       },
     })
@@ -72,29 +100,22 @@ export function SignupForm() {
       return
     }
 
-    const userId = data.user?.id
-
-    if (userId) {
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: userId,
-        full_name: fullName,
-        email,
-        role,
-      })
-
-      if (profileError) {
-        setError(profileError.message)
-        setIsSubmitting(false)
-        return
-      }
-    }
-
     const needsEmailVerification = !data.session
 
     if (needsEmailVerification) {
-      setMessage("Signup successful. Please verify your email, then sign in.")
+      if (isLocalHost) {
+        setLocalInboxUrl(localMailboxUrl)
+        window.open(localMailboxUrl, "_blank", "noopener,noreferrer")
+        setMessage(
+          `Signup successful. Opened local inbox for verification. After confirming email, sign in at ${toTenantLoginUrl(normalizedSlug)}`
+        )
+      } else {
+        setMessage(
+          `Signup successful. Verify your email, then sign in at ${toTenantLoginUrl(normalizedSlug)}`
+        )
+      }
     } else {
-      router.push("/dashboard")
+      router.push(toTenantLoginUrl(normalizedSlug))
       router.refresh()
       return
     }
@@ -112,7 +133,7 @@ export function SignupForm() {
       <CardHeader>
         <CardTitle className="text-xl text-slate-900">Create a SysPilot account</CardTitle>
         <CardDescription className="text-slate-600">
-          Register to access your ERP dashboard.
+          Register your company and get a dedicated SysPilot subdomain.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -128,6 +149,35 @@ export function SignupForm() {
               onChange={(event) => setFullName(event.target.value)}
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium" htmlFor="companyName">
+              Company name
+            </label>
+            <Input
+              id="companyName"
+              type="text"
+              value={companyName}
+              onChange={(event) => handleCompanyNameChange(event.target.value)}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium" htmlFor="companySlug">
+              Company subdomain
+            </label>
+            <Input
+              id="companySlug"
+              type="text"
+              value={companySlug}
+              onChange={(event) => setCompanySlug(event.target.value)}
+              required
+            />
+            <p className="text-xs text-slate-500">
+              Your login URL will be {previewLoginUrl.replace("https://", "").replace("/login", "")}
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -160,17 +210,18 @@ export function SignupForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="role">
-              Role
+            <label className="text-sm font-medium" htmlFor="industry">
+              Industry
             </label>
-            <Select value={role} onValueChange={handleRoleChange}>
-              <SelectTrigger className="w-full" id="role">
-                <SelectValue placeholder="Select role" />
+            <Select value={industry} onValueChange={setIndustry}>
+              <SelectTrigger className="w-full" id="industry">
+                <SelectValue placeholder="Select industry" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="manager">Manager</SelectItem>
-                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                <SelectItem value="Retail">Retail</SelectItem>
+                <SelectItem value="Distribution">Distribution</SelectItem>
+                <SelectItem value="Technology">Technology</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -182,9 +233,19 @@ export function SignupForm() {
           ) : null}
 
           {message ? (
-            <p className="rounded-md bg-emerald-500/10 p-2 text-sm text-emerald-700 dark:text-emerald-300">
-              {message}
-            </p>
+            <div className="space-y-2 rounded-md bg-emerald-500/10 p-2 text-sm text-emerald-700 dark:text-emerald-300">
+              <p>{message}</p>
+              {localInboxUrl ? (
+                <a
+                  className="font-medium underline"
+                  href={localInboxUrl}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  Open local inbox again
+                </a>
+              ) : null}
+            </div>
           ) : null}
 
           <Button className="w-full bg-blue-700 text-white hover:bg-blue-800" disabled={isSubmitting} type="submit">

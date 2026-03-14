@@ -36,3 +36,10 @@
 - [x] Dark mode toggle (2026-03-14 14:52)
 - [!] Final Vercel deploy (blocked: invalid Vercel token) (2026-03-14 14:52)
 - [x] README with screenshots (2026-03-14 14:52)
+
+## Phase 5: Access Control Enhancements
+- [x] Admin user management for manager/user roles + admin self password update (2026-03-14 16:13)
+
+## Phase 6: Multi-Tenant SaaS Architecture
+- [x] Implement subdomain-aware multi-tenant foundation (slug, RLS, role model, middleware, tenant registration UX, super admin panel) (2026-03-14 16:31)
+- [x] Local signup email verification via browser inbox (`localhost` auto-open) (2026-03-14 16:59)

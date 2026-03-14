@@ -24,7 +24,13 @@ function sum(values: number[]) {
 }
 
 export default async function DashboardPage() {
-  const { supabase, companyId } = await getAuthenticatedContext()
+  const { supabase, companyId, profile, isSuperAdmin } = await getAuthenticatedContext()
+
+  const { data: company } = await supabase
+    .from("companies")
+    .select("name, slug")
+    .eq("id", companyId)
+    .maybeSingle()
 
   const [
     productsResult,
@@ -112,9 +118,19 @@ export default async function DashboardPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Operations Overview</h1>
-          <p className="text-sm text-slate-600">Real-time pulse across inventory, sales, purchasing, and finance.</p>
+          <p className="text-sm text-slate-600">
+            Real-time pulse across inventory, sales, purchasing, and finance.
+          </p>
+          {company ? (
+            <p className="mt-1 text-xs text-slate-500">
+              Tenant: {company.name} ({company.slug})
+              {isSuperAdmin ? " - viewed as super admin scope" : ""}
+            </p>
+          ) : null}
         </div>
-        <Badge className="bg-blue-700/90 text-white" variant="secondary">Live ERP Snapshot</Badge>
+        <Badge className="bg-blue-700/90 text-white capitalize" variant="secondary">
+          {profile.role.replace("_", " ")}
+        </Badge>
       </div>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

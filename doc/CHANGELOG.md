@@ -29,3 +29,27 @@
 - Expanded seed script to generate large idempotent demo dataset: 50 customers, 20 suppliers, 100 products, 100 sales orders, 100 purchase orders, 100 work orders, 100 quality inspections, 30 BOMs, and 300 forecasts.
 - Added README screenshot section and SVG screenshot assets under `public/screenshots/`.
 - Attempted Vercel production deploy via CLI; blocked by invalid Vercel token.
+- Added admin-only `/users` dashboard page for managing `manager` and `user` profile accounts (rename + role updates).
+- Added admin self-service password update UI using Supabase `auth.updateUser`.
+- Updated dashboard sidebar to show `Users` navigation only when the signed-in profile role is `admin`.
+- Added migration `supabase/migrations/20260314173000_multitenant_saas_foundation.sql` for SaaS tenancy:
+  company `slug`, tenant-scoped unique constraints, `super_admin/company_admin` role model, and strict tenant RLS policies.
+- Added tenant utility `src/lib/tenant.ts` and updated middleware to resolve tenant slug from subdomain and attach tenant context via request headers/cookies.
+- Updated authenticated context resolution to support super admin scoped-company view and tenant URL/company validation.
+- Upgraded signup flow to company registration (company name + slug), creating first `company_admin` via auth metadata and redirecting to tenant login URL.
+- Added super admin panel route `/super-admin` for global company management and cross-tenant KPI visibility.
+- Updated dashboard shell and sidebar for tenant-aware navigation, super admin company scope switcher, and role-aware route visibility.
+- Added `slugify` dependency and `NEXT_PUBLIC_ROOT_DOMAIN` to `.env.example`.
+- Added API routes:
+  - `GET /api/tenant/context` for tenant + role context
+  - `GET/POST /api/super-admin/companies` for super-admin company management.
+- Updated seed script to comply with tenant-scoped uniqueness and new role model (`company_admin`), then verified remote seed run succeeds after RLS changes.
+- Pushed multi-tenant migration to linked remote Supabase project via CLI (`supabase db push`).
+- Implemented free tenant URL mode on Vercel using alias pattern `{slug}-syspilot.vercel.app` and updated tenant extraction/generation logic in `src/lib/tenant.ts`.
+- Updated signup URL preview to reflect actual tenant login host pattern.
+- Added optional `NEXT_PUBLIC_VERCEL_PROJECT_NAME` in `.env.example` for deterministic vercel-app alias routing.
+- Created and verified live alias `abc-syspilot.vercel.app` pointing to production deployment.
+- Updated signup flow for local development to auto-open local mailbox UI when email confirmation is required (`http://127.0.0.1:54324` by default).
+- Added optional `NEXT_PUBLIC_LOCAL_MAILBOX_URL` in `.env.example`.
+- Updated README with local Supabase inbox verification steps (`supabase start` + browser inbox flow).
+- Updated local runtime config `.env.local` to use local Supabase URL + publishable key (`http://127.0.0.1:54321`) for development auth/signup flows.

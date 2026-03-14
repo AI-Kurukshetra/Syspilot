@@ -263,7 +263,9 @@ async function authenticateSeedUser(url, anonKey, email, password, fullName) {
     options: {
       data: {
         full_name: fullName,
-        role: "admin",
+        role: "company_admin",
+        company_name: "SysPilot Demo Manufacturing",
+        company_slug: "demo",
       },
     },
   })
@@ -320,27 +322,45 @@ async function run() {
 
   const userId = authData.user.id
 
-  const { data: companyData, error: companyError } = await authedClient
-    .from("companies")
-    .upsert(
-      {
+  const { data: currentProfile, error: currentProfileError } = await authedClient
+    .from("profiles")
+    .select("company_id, role")
+    .eq("id", userId)
+    .maybeSingle()
+
+  if (currentProfileError) {
+    throw new Error(`Failed to read current profile: ${currentProfileError.message}`)
+  }
+
+  let companyId = currentProfile?.company_id ?? null
+
+  if (!companyId) {
+    if (currentProfile?.role !== "super_admin") {
+      throw new Error("Seed user must belong to a company or be a super_admin.")
+    }
+
+    const { data: createdCompany, error: createdCompanyError } = await authedClient
+      .from("companies")
+      .insert({
         name: "SysPilot Demo Manufacturing",
         code: "DEMO",
+        slug: "demo",
         industry: "Manufacturing",
         country: "US",
         currency: "USD",
         city: "Austin",
-      },
-      { onConflict: "code" }
-    )
-    .select("id")
-    .single()
+      })
+      .select("id")
+      .single()
 
-  if (companyError || !companyData) {
-    throw new Error(`Failed to seed company: ${companyError?.message ?? "no company id returned"}`)
+    if (createdCompanyError || !createdCompany) {
+      throw new Error(
+        `Failed to create demo company for super admin seed: ${createdCompanyError?.message ?? "no company id returned"}`
+      )
+    }
+
+    companyId = createdCompany.id
   }
-
-  const companyId = companyData.id
 
   const { error: profileError } = await authedClient.from("profiles").upsert(
     {
@@ -348,7 +368,7 @@ async function run() {
       company_id: companyId,
       full_name: seedAdminFullName,
       email: seedAdminEmail,
-      role: "admin",
+      role: "company_admin",
       is_active: true,
     },
     { onConflict: "id" }
@@ -387,7 +407,7 @@ async function run() {
         country: "US",
       },
     ],
-    "code",
+    "company_id,code",
     "id,code"
   )
 
@@ -419,7 +439,7 @@ async function run() {
     authedClient,
     "suppliers",
     supplierRows,
-    "code",
+    "company_id,code",
     "id,code"
   )
 
@@ -449,7 +469,7 @@ async function run() {
     authedClient,
     "customers",
     customerRows,
-    "code",
+    "company_id,code",
     "id,code"
   )
 
@@ -491,7 +511,7 @@ async function run() {
     authedClient,
     "products",
     productRows,
-    "sku",
+    "company_id,sku",
     "id,sku,unit_cost,selling_price,category"
   )
 
@@ -529,7 +549,7 @@ async function run() {
     authedClient,
     "sales_orders",
     salesOrderRows,
-    "order_number",
+    "company_id,order_number",
     "id,order_number,total_amount"
   )
 
@@ -583,7 +603,7 @@ async function run() {
     authedClient,
     "purchase_orders",
     purchaseOrderRows,
-    "po_number",
+    "company_id,po_number",
     "id,po_number"
   )
 
@@ -636,7 +656,7 @@ async function run() {
     authedClient,
     "work_orders",
     workOrderRows,
-    "wo_number",
+    "company_id,wo_number",
     "id,wo_number,product_id"
   )
 
@@ -683,7 +703,7 @@ async function run() {
     authedClient,
     "transactions",
     transactionRows,
-    "transaction_number"
+    "company_id,transaction_number"
   )
 
   const qualityRows = workOrders.map((workOrder, index) => {
@@ -711,7 +731,7 @@ async function run() {
     authedClient,
     "quality_inspections",
     qualityRows,
-    "inspection_number"
+    "company_id,inspection_number"
   )
 
   const { data: existingSeedBoms, error: existingSeedBomsError } = await authedClient

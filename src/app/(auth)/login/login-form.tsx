@@ -23,6 +23,8 @@ export function LoginForm() {
   const [password, setPassword] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const hostname = typeof window !== "undefined" ? window.location.hostname : ""
+  const tenantHint = hostname.split(".").length > 2 ? hostname.split(".")[0] : null
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -57,6 +59,9 @@ export function LoginForm() {
         <CardDescription className="text-slate-600">
           Continue into your intelligent operations workspace.
         </CardDescription>
+        {tenantHint ? (
+          <p className="text-xs text-slate-500">Tenant workspace: {tenantHint}</p>
+        ) : null}
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={handleSubmit}>

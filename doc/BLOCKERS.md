@@ -17,3 +17,10 @@ Resolved: Supabase seed blocker cleared; seeding completed successfully with exi
 Problem:   Vercel production deployment failed (`The specified token is not valid`).
 Attempted: Ran `pnpm dlx vercel --prod --yes` from project root.
 Needs:     Run `vercel login` with a valid account/token (or provide `VERCEL_TOKEN`) and rerun deploy.
+
+[2026-03-14] BLOCKER — codex
+Problem:   Wildcard subdomain could not be configured on `*.syspilot.vercel.app` (`403: no access to domain`).
+Attempted: Ran `pnpm dlx vercel domains add '*.syspilot.vercel.app'` against linked project `syspilot`.
+Needs:     Provide or add a custom root domain owned by your team (for example `syspilot.com`) in Vercel, then configure wildcard `*.syspilot.com` and DNS records.
+[2026-03-14] RESOLVED — codex
+Resolved: Implemented free alternative on Vercel shared domain using per-tenant aliases (`{slug}-syspilot.vercel.app`) and verified alias creation (`abc-syspilot.vercel.app`).

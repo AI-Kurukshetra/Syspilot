@@ -25,6 +25,12 @@ SEED_ADMIN_PASSWORD=SysPilot#2026
 SEED_ADMIN_FULL_NAME=SysPilot Admin
 ```
 
+Local auth inbox (optional for local Supabase):
+
+```bash
+NEXT_PUBLIC_LOCAL_MAILBOX_URL=http://127.0.0.1:54324
+```
+
 ## Install + Run
 
 ```bash
@@ -38,6 +44,13 @@ Apply SQL migrations in order from:
 
 - `supabase/migrations/20260314000000_initial_schema.sql`
 - `supabase/migrations/20260314133500_auth_profile_alignment.sql`
+- `supabase/migrations/20260314173000_multitenant_saas_foundation.sql`
+
+For local auth email verification in browser:
+
+1. Run local Supabase (`supabase start`).
+2. Sign up from local app (`http://localhost:3000/signup`).
+3. SysPilot opens local inbox automatically (`http://127.0.0.1:54324`) so you can click the verification email link.
 
 ## Seed Demo Data
 
