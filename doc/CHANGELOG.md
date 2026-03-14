@@ -62,3 +62,4 @@
   - `src/components/dashboard/theme-toggle.tsx`
 - Hardened tenant mismatch behavior so non-super-admin users without a resolvable company slug are denied on tenant URLs and signed out safely.
 - Fixed tenant extraction when `NEXT_PUBLIC_ROOT_DOMAIN` includes a port (for example `localhost:3000`) by normalizing root-domain host parsing in `src/lib/tenant.ts`, ensuring subdomain tenant isolation works in local development (`company.localhost:3000`).
+- Fixed Vercel/Next.js prerender failure for `/login` by wrapping `LoginForm` in `Suspense` in `src/app/(auth)/login/page.tsx` (required because `LoginForm` reads query params with `useSearchParams()`).

@@ -84,3 +84,8 @@
 - **Decision**: Normalize `NEXT_PUBLIC_ROOT_DOMAIN` with port stripping when resolving tenant slug from request host.
 - **Rationale**: Keeps tenant detection correct in local setups that use host+port roots (for example `localhost:3000`) and prevents accidental bypass of subdomain access checks.
 - **Date**: 2026-03-14
+
+## D018: Suspense Boundary for Login Query-Param Reads
+- **Decision**: Wrap the login client form in `<Suspense>` at the page boundary because it uses `useSearchParams()`.
+- **Rationale**: Prevents static prerender/export failure for `/login` in production builds while preserving tenant-mismatch error rendering via query params.
+- **Date**: 2026-03-14

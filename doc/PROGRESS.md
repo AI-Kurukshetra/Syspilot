@@ -16,3 +16,4 @@
 [2026-03-14 17:36] codex — Enforced tenant-scoped login: users are signed out and blocked when attempting to authenticate on a different company subdomain; login page now shows tenant-mismatch guidance.
 [2026-03-14 17:41] codex — Cleared repository lint blockers (`set-state-in-effect`) in dashboard client components and hardened tenant mismatch guards for non-super-admin accounts missing valid company slug mapping.
 [2026-03-14 17:46] codex — Fixed tenant host parsing for local subdomains by normalizing configured root domains with ports (e.g. `localhost:3000`), restoring middleware/login tenant mismatch enforcement locally.
+[2026-03-14 17:58] codex — Fixed Next.js prerender error on `/login` (Vercel build) by wrapping `LoginForm` with `<Suspense>` because the form uses `useSearchParams()`.
